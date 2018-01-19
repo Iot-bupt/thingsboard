@@ -16,6 +16,8 @@
 package org.thingsboard.server.controller;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,7 @@ import org.thingsboard.server.dao.model.ModelConstants;
 import org.thingsboard.server.exception.ThingsboardErrorCode;
 import org.thingsboard.server.exception.ThingsboardException;
 import org.thingsboard.server.service.security.model.SecurityUser;
+import org.thingsboard.server.transport.http.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +84,38 @@ public class DeviceController extends BaseController {
                             savedDevice.getId(),
                             savedDevice.getName(),
                             savedDevice.getType());
+            return savedDevice;
+        } catch (Exception e) {
+            throw handleException(e);
+        }
+    }
+
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @RequestMapping(value = "/device/updatecoordinate/{deviceId}", method = RequestMethod.POST)
+    @ResponseBody
+    public Device updateDeviceCoordinate(@RequestBody String  coordinate,@PathVariable String deviceId) throws ThingsboardException {
+        try {
+            Device device = checkNotNull(deviceService.findDeviceById(DeviceId.fromString(deviceId)));
+            JsonObject json = new JsonParser().parse(coordinate).getAsJsonObject();
+             String manufacture = json.get("manufacture").getAsString();
+             String deviceType = json.get("deviceType").getAsString();
+             String model = json.get("model").getAsString();
+
+             if(!StringUtil.checkNotNull(manufacture,deviceType,model)) return null;
+
+            device.setManufacture(manufacture);
+            device.setDeviceType(deviceType);
+            device.setModel(model);
+
+            Device savedDevice = checkNotNull(deviceService.saveDevice(device));
+
+            actorService
+                    .onDeviceNameOrTypeUpdate(
+                            savedDevice.getTenantId(),
+                            savedDevice.getId(),
+                            savedDevice.getName(),
+                            savedDevice.getType());
+
             return savedDevice;
         } catch (Exception e) {
             throw handleException(e);
