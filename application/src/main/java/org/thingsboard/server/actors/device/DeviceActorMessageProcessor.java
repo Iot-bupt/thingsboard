@@ -474,6 +474,8 @@ public class DeviceActorMessageProcessor extends AbstractContextAwareMsgProcesso
     public void processNameOrTypeUpdate(DeviceNameOrTypeUpdateMsg msg) {
         this.deviceName = msg.getDeviceName();
         this.deviceType = msg.getDeviceType();
+        //更新设备影子
+        initDeviceShadow();
     }
 
     public void process(DeviceRecognitionMsg msg){
