@@ -98,7 +98,7 @@ public class DeviceShadow {
         Optional< ServiceTable > serviceTable =  systemContext.getServiceTableService().findServiceTableByCoordinate(
                 manufacture+"%"+deviceType+"%"+model);
         if(!serviceTable.isPresent()) {
-            System.err.println("cant find service named "+manufacture+"%"+deviceType+"%"+model);
+            System.err.println("can't find service named "+manufacture+"%"+deviceType+"%"+model);
             return ;
         }
         String des = serviceTable.get().getDescription();
