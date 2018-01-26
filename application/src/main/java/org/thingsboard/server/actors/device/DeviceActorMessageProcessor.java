@@ -503,9 +503,21 @@ public class DeviceActorMessageProcessor extends AbstractContextAwareMsgProcesso
         //Service service = shadow.getServiceByName(payLoad.get("serviceName").getAsString());
         JsonObject obj = new JsonParser().parse(paramsAndServiceName.toString()).getAsJsonObject();
         Service service = shadow.getServiceByName(obj.get("serviceName").getAsString());
-        obj.remove("serviceName");
-       // Service service = new Service(payLoad);
-        service.serviceCall(msg,obj,this,rpcPendingMapFromDeviceShadow,context);
+        if(service==null){
+            if(msg.getParentDevice()!=null){
+                Device device = msg.getDevice();
+                DeviceShadow tempShadow = new DeviceShadow(systemContext,device);
+                service = tempShadow.getServiceByName(obj.get("serviceName").getAsString());
+                obj.remove("serviceName");
+                service.serviceCall(msg,obj,this,rpcPendingMapFromDeviceShadow,context);
+            }else{
+                return ;
+            }
+        }else{
+            obj.remove("serviceName");
+            // Service service = new Service(payLoad);
+            service.serviceCall(msg,obj,this,rpcPendingMapFromDeviceShadow,context);
+        }
     }
 
     public  void processServiceGroupUpdateMsg(ServiceGroupUpdateMsg msg){

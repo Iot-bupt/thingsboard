@@ -27,11 +27,13 @@ import org.thingsboard.server.extensions.api.device.ToDeviceActorNotificationMsg
  */
 public class DeviceShadowMsg implements ToDeviceActorNotificationMsg {
 
+    private final Device parentDevice;
     private final Device device;
     private final JsonObject payLoad;
     private final DeferredResult<String> result;
 
-    public DeviceShadowMsg(Device device,JsonObject json,DeferredResult<String> result){
+    public DeviceShadowMsg(Device parentDevice,Device device,JsonObject json,DeferredResult<String> result){
+        this.parentDevice = parentDevice;
         this.device = device;
         this.payLoad = json;
         this.result = result;
@@ -44,9 +46,14 @@ public class DeviceShadowMsg implements ToDeviceActorNotificationMsg {
 
     @Override
     public DeviceId getDeviceId() {
-        return device.getId();
+        return parentDevice==null?device.getId():parentDevice.getId();
     }
-
+    public Device getDevice(){
+        return device;
+    }
+    public Device getParentDevice(){
+        return parentDevice;
+    }
     public JsonObject getPayLoad(){
         return payLoad;
     }

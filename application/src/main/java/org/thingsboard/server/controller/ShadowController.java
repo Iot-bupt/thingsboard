@@ -76,15 +76,15 @@ public class ShadowController {
         if(obj.get("requestName").getAsString().equals("serviceCall")){
             if(device.getParentDeviceId()==null||"".equals(device.getParentDeviceId())||
                     "13814000-1dd2-11b2-8080-808080808080".equals(device.getParentDeviceId())){
-                DeviceShadowMsg msg = new DeviceShadowMsg(device,parser.parse(json).getAsJsonObject(),result);
+                DeviceShadowMsg msg = new DeviceShadowMsg(null,device,parser.parse(json).getAsJsonObject(),result);
                 actorService.onMsg(msg);
             }else{
               Device parentDevice =  deviceService.findDeviceById(DeviceId.fromString(device.getParentDeviceId()));
-                DeviceShadowMsg msg = new DeviceShadowMsg(parentDevice,parser.parse(json).getAsJsonObject(),result);
+                DeviceShadowMsg msg = new DeviceShadowMsg(parentDevice,device,parser.parse(json).getAsJsonObject(),result);
                 actorService.onMsg(msg);
             }
         }else{
-            DeviceShadowMsg msg = new DeviceShadowMsg(device,parser.parse(json).getAsJsonObject(),result);
+            DeviceShadowMsg msg = new DeviceShadowMsg(null,device,parser.parse(json).getAsJsonObject(),result);
             actorService.onMsg(msg);
         }
         return result;
@@ -106,11 +106,11 @@ public class ShadowController {
         if(obj.get("requestName").getAsString().equals("serviceCall")){
             if(device.getParentDeviceId()==null||"".equals(device.getParentDeviceId())||
                     "13814000-1dd2-11b2-8080-808080808080".equals(device.getParentDeviceId())){
-                DeviceShadowMsg msg = new DeviceShadowMsg(device,parser.parse(json).getAsJsonObject(),result);
+                DeviceShadowMsg msg = new DeviceShadowMsg(null,device,parser.parse(json).getAsJsonObject(),result);
                 helper(msg,scheduleType,paths);
             }else{
                 Device parentDevice =  deviceService.findDeviceById(DeviceId.fromString(device.getParentDeviceId()));
-                DeviceShadowMsg msg = new DeviceShadowMsg(parentDevice,parser.parse(json).getAsJsonObject(),result);
+                DeviceShadowMsg msg = new DeviceShadowMsg(parentDevice,device,parser.parse(json).getAsJsonObject(),result);
                 helper(msg,scheduleType,paths);
             }
         }else{
