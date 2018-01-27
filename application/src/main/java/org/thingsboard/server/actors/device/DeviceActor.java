@@ -63,13 +63,14 @@ public class DeviceActor extends ContextAwareActor {
             if (msg instanceof DeviceAttributesEventNotificationMsg) {
                 processor.processAttributesUpdate(context(), (DeviceAttributesEventNotificationMsg) msg);
             } else if (msg instanceof ToDeviceRpcRequestPluginMsg) {
+                // TODO .[TB发送rpc请求]
                 processor.processRpcRequest(context(), (ToDeviceRpcRequestPluginMsg) msg);
             } else if (msg instanceof DeviceCredentialsUpdateNotificationMsg){
                 processor.processCredentialsUpdate();
             } else if (msg instanceof DeviceNameOrTypeUpdateMsg){
                 processor.processNameOrTypeUpdate((DeviceNameOrTypeUpdateMsg) msg);
-                //TODO modified by cc
             }else if(msg instanceof  DeviceShadowMsg){
+                //TODO modified by cc.[根据请求类型在设备影子上进行操作]
                 processor.processDeviceShadowMsg(context(),(DeviceShadowMsg)msg);
             }
         } else if (msg instanceof TimeoutMsg) {
@@ -77,6 +78,7 @@ public class DeviceActor extends ContextAwareActor {
         } else if (msg instanceof ClusterEventMsg) {
             processor.processClusterEventMsg((ClusterEventMsg) msg);
         } else if(msg instanceof DeviceRecognitionMsg){
+            // TODO .[重新为设备绑定设备影子]
             processor.process((DeviceRecognitionMsg)msg);
         }else if(msg instanceof ServiceGroupUpdateMsg){
             processor.processServiceGroupUpdateMsg((ServiceGroupUpdateMsg)msg);
